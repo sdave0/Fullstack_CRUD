@@ -1,4 +1,7 @@
-flask
-psycopg2-binary
-Flask-SQLAlchemy
-Flask-CORS
+Flask==2.3.2
+Flask-SQLAlchemy==3.0.3
+Flask-CORS==4.0.0
+Flask-JWT-Extended==4.5.0  # For JWT authentication
+psycopg2-binary==2.9.6     # PostgreSQL adapter for Python
+python-dotenv==1.0.0       # For loading environment variables from .env
+Werkzeug==2.3.6            # For password hashing (used with Flask)
