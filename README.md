@@ -2,16 +2,6 @@
 
 A high-performance, containerized full-stack web application for user management with secure authentication and CRUD functionality. Built with Next.js (React), Flask, and PostgreSQL.
 
-
-## Features
-
-- 🔐 **Secure Authentication**: JWT-based authentication system
-- 👥 **User Management**: Complete CRUD operations for user accounts
-- 🔄 **RESTful API**: Well-structured API with Flask
-- 🎨 **Modern UI**: Responsive design built with Next.js
-- 🐳 **Containerized**: Easy deployment with Docker
-- 🗄️ **Persistent Storage**: PostgreSQL database
-
 ## Tech Stack
 
 - **Frontend**: Next.js (React)
