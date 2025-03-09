@@ -1,12 +1,15 @@
-import React from 'react';
-import UserInterface from '../components/UserInterface';
+// pages/index.tsx
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
 
 const Home: React.FC = () => {
-  return (
-    <div>
-      <UserInterface backendName="flask" />
-    </div>
-  );
-}
+  const router = useRouter();
+
+  useEffect(() => {
+    router.replace('/login');
+  }, [router]);
+
+  return null;
+};
 
 export default Home;
