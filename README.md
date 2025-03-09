@@ -77,10 +77,10 @@ Fullstack_CRUD/
 - `GET /api/auth/me` - Get current user information
 
 ### User Management
-- `GET /api/users` - List all users (admin only)
+- `GET /api/users` - List all users 
 - `GET /api/users/:id` - Get user details
-- `PUT /api/users/:id` - Update user
-- `DELETE /api/users/:id` - Delete user
+- `PUT /api/users/:id` - Update user (admin only)
+- `DELETE /api/users/:id` - Delete user (admin only)
 
 ## Environment Variables
 
