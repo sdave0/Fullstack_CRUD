@@ -2,9 +2,6 @@
 
 A high-performance, containerized full-stack web application for user management with secure authentication and CRUD functionality. Built with Next.js (React), Flask, and PostgreSQL.
 
-![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)
-![GitHub stars](https://img.shields.io/github/stars/sdave0/Fullstack_CRUD?style=social)
-![GitHub forks](https://img.shields.io/github/forks/sdave0/Fullstack_CRUD?style=social)
 
 ## Features
 
@@ -129,10 +126,6 @@ flask run --port=4000
 3. Commit your changes (`git commit -m 'Add some amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## Contact
 
