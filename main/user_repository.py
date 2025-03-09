@@ -1,13 +1,17 @@
+# user_repository.py
 from models import db, User
-from flask_sqlalchemy import SQLAlchemy  # Import SQLAlchemy here
 
 class UserRepository:
-    def __init__(self, db: SQLAlchemy):
+    def __init__(self, db):
         self.db = db
+        self.allowed_roles = ['user', 'admin']
 
-    def create_user(self, name: str, email: str) -> User:
+    def create_user(self, name: str, email: str, password: str, role: str = 'user') -> User:
+        if role not in self.allowed_roles:
+            raise ValueError(f"Invalid role: {role}. Allowed roles: {self.allowed_roles}")
         try:
-            new_user = User(name=name, email=email)
+            new_user = User(name=name, email=email, role=role)
+            new_user.set_password(password)
             self.db.session.add(new_user)
             self.db.session.commit()
             return new_user

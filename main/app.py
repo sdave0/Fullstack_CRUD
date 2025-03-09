@@ -1,73 +1,62 @@
-from flask import Flask, request, jsonify, make_response
+# app.py
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
-from user_repository import UserRepository
+from flask_jwt_extended import JWTManager
+from dotenv import load_dotenv
+import os
 from models import db
-from os import environ
+
+
+load_dotenv()
 
 app = Flask(__name__)
-CORS(app)
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('DATABASE_URL')
-app.config['SQLALCHEMY_ECHO'] = True
-db.init_app(app)
+CORS(app, resources={r"/api/*": {"origins": ["http://localhost:3000", "http://localhost:4000"]}})
 
-# Initialize the repository
-user_repo = UserRepository(db)
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
+app.config['SQLALCHEMY_ECHO'] = False
+if not app.config['JWT_SECRET_KEY']:
+    raise ValueError("JWT_SECRET_KEY environment variable must be set")
 
-@app.route('/api/flask/users', methods=['POST'])
-def create_user():
-    try:
-        data = request.get_json()
-        if 'name' not in data or 'email' not in data:
-            return make_response(jsonify({'message': 'Name and email are required'}), 400)
 
-        new_user = user_repo.create_user(data['name'], data['email'])
-        return jsonify({'id': new_user.id, 'name': new_user.name, 'email': new_user.email}), 201
-    except Exception as e:
-        return make_response(jsonify({'message': 'Error creating user', 'error': str(e)}), 500)
 
-@app.route('/api/flask/users', methods=['GET'])
-def get_users():
-    try:
-        users = user_repo.get_all_users()
-        users_data = [{'id': user.id, 'name': user.name, 'email': user.email} for user in users]
-        return jsonify(users_data), 200
-    except Exception as e:
-        return make_response(jsonify({'message': 'Error getting users', 'error': str(e)}), 500)
+db.init_app(app) 
 
-@app.route('/api/flask/users/<id>', methods=['GET'])
-def get_user(id):
-    try:
-        user = user_repo.get_user_by_id(id)
-        if user:
-            return make_response(jsonify({'user': user.json()}), 200)
-        return make_response(jsonify({'message': 'User not found'}), 404)
-    except Exception as e:
-        return make_response(jsonify({'message': 'Error getting user', 'error': str(e)}), 500)
+jwt = JWTManager(app)
 
-@app.route('/api/flask/users/<id>', methods=['PUT'])
-def update_user(id):
-    try:
-        data = request.get_json()
-        if 'name' not in data or 'email' not in data:
-            return make_response(jsonify({'message': 'Name and email are required'}), 400)
+# Register blueprints
+from auth_routes import auth_bp
+from user_routes import user_bp
 
-        updated_user = user_repo.update_user(id, data['name'], data['email'])
-        if updated_user:
-            return make_response(jsonify({'message': 'User updated'}), 200)
-        return make_response(jsonify({'message': 'User not found'}), 404)
-    except Exception as e:
-        return make_response(jsonify({'message': 'Error updating user', 'error': str(e)}), 500)
+app.register_blueprint(auth_bp, url_prefix='/api/flask')
+app.register_blueprint(user_bp, url_prefix='/api/flask')
+from models import db, User
+from app import app  # Import the Flask app instance
+from werkzeug.security import generate_password_hash
 
-@app.route('/api/flask/users/<id>', methods=['DELETE'])
-def delete_user(id):
-    try:
-        success = user_repo.delete_user(id)
-        if success:
-            return make_response(jsonify({'message': 'User deleted'}), 200)
-        return make_response(jsonify({'message': 'User not found'}), 404)
-    except Exception as e:
-        return make_response(jsonify({'message': 'Error deleting user', 'error': str(e)}), 500)
 
-if __name__ == '__main__':
-    app.run(debug=True)
+def setup_database():
+    '''
+    with app.app_context():
+        # Ensure tables exist
+        db.create_all()
+
+        # Check if an admin user already exists
+        admin = User.query.filter_by(email="admin@admin.com").first()
+        if not admin:
+            print("Creating default admin user...")
+            admin_user = User(
+                name="Admin",
+                email="admin@admin.com",
+                role="admin",
+                password_hash=generate_password_hash("admin")  # Hash password
+            )
+            db.session.add(admin_user)
+            db.session.commit()
+            print("Admin user created successfully.")
+        else:
+            print("Admin user already exists.")
+'''
+if __name__ == "__main__":
+    setup_database()  # Ensure DB setup before starting
+    app.run(debug=True, host='0.0.0.0', port=4000)
