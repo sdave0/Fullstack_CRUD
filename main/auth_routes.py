@@ -1,4 +1,4 @@
-# auth_routes.py
+
 from flask import Blueprint, request, jsonify, make_response
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from models import User
